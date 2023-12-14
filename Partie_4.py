@@ -5,8 +5,16 @@ from scipy.io.wavfile import write
 import soundfile as sf
 import os
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-audio_folder = os.path.dirname(os.path.abspath(__file__))+"\son"
+# Répertoire de travail courant
+folder = os.path.dirname(os.path.abspath(__file__))
+os.chdir(folder)
+
+# Création du répertoire 'artificial_sound' dans le répertoire courant
+artificial_sound_folder_path = os.path.join(folder, "artificial_sound")
+os.makedirs(artificial_sound_folder_path, exist_ok=True)
+
+os.chdir(folder)
+audio_folder = os.path.dirname(os.path.abspath(__file__)) + "\son"
 
 def generate_audio(fundamental_freq, harmonics, fundamental_amp, harmonics_amp, duration, sample_rate):
     # Créez un tableau de temps pour la durée spécifiée
@@ -28,6 +36,7 @@ def generate_audio(fundamental_freq, harmonics, fundamental_amp, harmonics_amp, 
 
     # Enregistrez le signal audio dans un fichier WAV
     write(f"artificial_sound/audio_{note}.wav", sample_rate, audio_data.astype(np.float32))
+
 
 audio_files = {
     'Note_01': 'Note_01.aiff',
@@ -74,36 +83,37 @@ for note, file_name in audio_files.items():
 
     # FFT
     yf = np.fft.fft(data)
-    xf = np.fft.fftfreq(n, dt)[:n//2]
+    xf = np.fft.fftfreq(n, dt)[:n // 2]
 
     # Recherche des pics
-    peaks, _ = find_peaks(np.abs(yf[:n//2]), height=0)
+    peaks, _ = find_peaks(np.abs(yf[:n // 2]), height=0)
 
     plt.figure(figsize=(12, 6))
-    plt.plot(xf, 2.0/n * np.abs(yf[:n//2]))
-    plt.plot(xf[peaks], 2.0/n * np.abs(yf[:n//2])[peaks], "x")
+    plt.plot(xf, 2.0 / n * np.abs(yf[:n // 2]))
+    plt.plot(xf[peaks], 2.0 / n * np.abs(yf[:n // 2])[peaks], "x")
     plt.grid()
     plt.title(f"Spectre de {note}")
     plt.xlabel("Frequency (Hz)")
     plt.ylabel("Amplitude")
     plt.xlim(0, 2000)
-    #plt.show()
+    # plt.show()
 
     # Fréquence fondamentale et harmoniques
     fundamental_freq = xf[peaks][0]
     # Trier les fréquences des harmoniques par proximité avec la fréquence fondamentale
-    harmonics_with_differences = sorted([(freq, abs(freq - fundamental_freq)) for freq in xf[peaks]], key=lambda x: x[1])
+    harmonics_with_differences = sorted([(freq, abs(freq - fundamental_freq)) for freq in xf[peaks]],
+                                        key=lambda x: x[1])
 
     # Sélectionner les 100 harmoniques les plus proches
     closest_harmonics = harmonics_with_differences[1:10001]  # On exclut la fondamentale
 
     harmonics = [h[0] for h in closest_harmonics]
-    fundamental_amp = (2.0/n * np.abs(yf[:n//2]))[peaks][0]
-    harmonics_amp = (2.0/n * np.abs(yf[:n//2]))[peaks][1:]
+    fundamental_amp = (2.0 / n * np.abs(yf[:n // 2]))[peaks][0]
+    harmonics_amp = (2.0 / n * np.abs(yf[:n // 2]))[peaks][1:]
 
     print(f"Note {note}:")
     print("Fundamental Frequency:", fundamental_freq, "Hz")
     print("Fundamental Amplitude:", fundamental_amp)
-    #print("Harmonics:", list(zip(harmonics, harmonics_amp)))
-    
+    # print("Harmonics:", list(zip(harmonics, harmonics_amp)))
+
     generate_audio(fundamental_freq, harmonics, fundamental_amp, harmonics_amp, 1, 44100)
