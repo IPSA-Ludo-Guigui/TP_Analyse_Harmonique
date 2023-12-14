@@ -34,8 +34,6 @@ audio_files = {
 }
 
 for note, file_name in audio_files.items():
-    print(audio_folder)
-    print(file_name)
     file_path = os.path.join(audio_folder, file_name)
 
     # Lecture du fichier audio
@@ -77,4 +75,5 @@ for note, file_name in audio_files.items():
     print(f"Note {note}:")
     print("Fundamental Frequency:", fundamental_freq, "Hz")
     print("Fundamental Amplitude:", fundamental_amp)
-    print("Harmonics:", list(zip(harmonics, harmonics_amp)))
+    #print("Harmonics:", list(zip(harmonics, harmonics_amp)))
+
