@@ -5,7 +5,15 @@ from scipy.io.wavfile import write
 import soundfile as sf
 import os
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+# Répertoire de travail courant
+folder = os.path.dirname(os.path.abspath(__file__))
+os.chdir(folder)
+
+# Création du répertoire 'artificial_sound' dans le répertoire courant
+artificial_sound_folder_path = os.path.join(folder, "compressed_sound")
+os.makedirs(artificial_sound_folder_path, exist_ok=True)
+
+os.chdir(folder)
 audio_folder = os.path.dirname(os.path.abspath(__file__)) + "\son"
 
 def generate_audio(fundamental_freq, harmonics, fundamental_amp, harmonics_amp, duration, sample_rate):
