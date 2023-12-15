@@ -2,10 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Paramètre
-T = 10          # Intervalle de temps (1 seconde)
+T = 10           # Intervalle de temps (1 seconde)
 N = 1024         # Nombre d'échantillons
 dt = T / N       # Intervalle d'échantillonnage
+fe = 1/(T/N)
 
+print(fe)
 t = np.linspace(0.0, N*dt, N, endpoint=False) # Création de l'échelle de temps
 
 #définitions des fonctions 
@@ -38,6 +40,8 @@ for i in range(9, -1, -1):
 
     #spectre des fréquences
     plt.subplot(1, 2, 2)
+    plt.axvline(x = -1/2*fe, color = 'red')
+    plt.axvline(x = 1/2*fe, color = 'red')
     plt.stem(freq, np.abs(x_f), use_line_collection=True, markerfmt='')
     plt.title(f"Spectre de fréquences de {cles_liste[i]}")
     plt.xlabel("Fréquence (Hz)")
