@@ -1,3 +1,6 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 #on choisit un N arbitraire, N est la longueur du signal, en changeant la valeur de N on peut voir comment cela affecte la résolution fréquentielle
 #génerer le signal
 
